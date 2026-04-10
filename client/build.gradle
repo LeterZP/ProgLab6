@@ -12,6 +12,14 @@ repositories {
     mavenCentral()
 }
 
+shadowJar {
+    archiveBaseName.set('ProgLab6')
+    archiveVersion.set('2.0')
+    manifest {
+        attributes 'Main-Class': 'ClientKt'
+    }
+}
+
 dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0'
