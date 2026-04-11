@@ -3,7 +3,6 @@ package core
 import elements.City
 import elements.Government
 import exceptions.CollectionHasNoElementException
-import io.IOManager
 import java.io.IOException
 import java.util.Stack
 import java.time.LocalDate
@@ -13,7 +12,7 @@ import java.time.LocalDate
  *
  * @param io [IOManager], с которым взаимодействует коллекция.
  *
- * @property initializationTime Время инициализации коллекции типа [LocalTime].
+ * @property initializationTime Время инициализации коллекции типа [LocalDate].
  *
  * @constructor Принимает все указанные выше параметры, создавая готовый к использованию объект
  *              и сразу загружая элементы из файла.
@@ -26,17 +25,12 @@ class CollectionManager(private val io: IOManager) {
     val initializationTime: LocalDate = LocalDate.now()
 
     init {
-        val previousSource = io.source
-        io.source = save
         try {
-            collection = io.readAsJsonFile()
-            io.source = previousSource
+            collection = io.readJsonFile(save)
+            io.print("Коллекция успешно загружена.")
         } catch (e: IOException) {
-            io.source = previousSource
-            io.write("Файл сохранения не найден.\n")
+            io.print("Файл сохранения не найден.")
         }
-
-
     }
 
     /**
@@ -58,10 +52,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun saveToFile() {
-        val previousSource: String? = io.source
-        io.source = save
-        io.writeToJsonFile(collection)
-        io.source = previousSource
+        io.writeJsonFile(save, collection)
     }
 
     /**
@@ -123,7 +114,7 @@ class CollectionManager(private val io: IOManager) {
      *
      * @return Элемент коллекции типа [City].
      *
-     * @throws CollectionHasNoElementException В случае, если в коллекции нет элемента с таким [id].
+     * @throws exceptions.CollectionHasNoElementException В случае, если в коллекции нет элемента с таким [id].
      *
      * @since 1.0
      */
@@ -190,7 +181,7 @@ class CollectionManager(private val io: IOManager) {
      *
      * @param id [id][City.id] города [City].
      *
-     * @throws CollectionHasNoElementException В случае, если в коллекции нет элемента с таким [id].
+     * @throws exceptions.CollectionHasNoElementException В случае, если в коллекции нет элемента с таким [id].
      *
      * @since 1.0
      */
@@ -201,7 +192,7 @@ class CollectionManager(private val io: IOManager) {
     /**
      * Удаляет последний элемент коллекции.
      *
-     * @throws CollectionHasNoElementException В случае, если коллекция пуста.
+     * @throws exceptions.CollectionHasNoElementException В случае, если коллекция пуста.
      *
      * @since 1.0
      */

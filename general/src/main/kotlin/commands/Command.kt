@@ -1,19 +1,16 @@
 package commands
 
-import core.CommandInvoker
 import exceptions.InvalidAmountOfArgumentsException
 
 /**
  * Абстрактный класс для всех команд.
  *
- * @param ci [CommandInvoker], откуда вызывается команда.
- *
- * @property tokenAmount Количество аргументов, которые принимает команда, типа [Int].
+ * @property argumentsAmount Количество аргументов, которые принимает команда, типа [Int].
  *
  * @since 1.0
  */
-abstract class Command(protected val ci: CommandInvoker) {
-    open val tokenAmount: Int = 0
+abstract class Command() {
+    open val argumentsAmount: Int = 0
 
     override fun toString(): String {
         if (getSyntax() == "") return getName() + getSyntax()
@@ -23,16 +20,17 @@ abstract class Command(protected val ci: CommandInvoker) {
     /**
      * Исполняет команду.
      *
-     * @param token [List], содержащий в себе все аргументы команды типа [String].
+     * @param arguments [List], содержащий в себе все аргументы команды типа [String].
      *
      * @throws InvalidAmountOfArgumentsException В случае, если количество данных элементов не совпадает с
      *                                           количеством элементов, которые принимает команда.
      *
      * @since 1.0
      */
-    open fun execute(token: List<String>) {
-        while (token.contains("")) token.minus("")
-        if (token.size != tokenAmount) throw InvalidAmountOfArgumentsException(this, token.size)
+    open fun execute(arguments: List<String>) {
+        var arguments = arguments
+        while (arguments.contains("")) arguments = arguments.minus("")
+        if (arguments.size != argumentsAmount) throw InvalidAmountOfArgumentsException(this, arguments.size)
     }
 
     /**

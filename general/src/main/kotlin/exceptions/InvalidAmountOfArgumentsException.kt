@@ -18,7 +18,7 @@ import commands.Command
  */
 class InvalidAmountOfArgumentsException(private val command: Command, private val amount: Int): Exception() {
     private val name: String = command.getName()
-    private val realAmount: Int = command.tokenAmount
+    private val realAmount: Int = command.argumentsAmount
 
     override val message: String = "Команда $name принимает только $realAmount аргументов, а не $amount"
 }

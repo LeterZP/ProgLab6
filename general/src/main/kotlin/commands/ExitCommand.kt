@@ -1,12 +1,9 @@
 package commands
 
-import core.CommandInvoker
 import exceptions.ProgramExitException
 
 /**
  * Команда для выхода из программы.
- *
- * @param ci [CommandInvoker] для [Command].
  *
  * @constructor Вызывает родительский конструктор класса [Command].
  *
@@ -14,9 +11,9 @@ import exceptions.ProgramExitException
  *
  * @since 1.0
  */
-class ExitCommand(ci: CommandInvoker): Command(ci) {
-    override fun execute(token: List<String>) {
-        super.execute(token)
+class ExitCommand(): Command() {
+    override fun execute(arguments: List<String>) {
+        super.execute(arguments)
         throw ProgramExitException()
     }
 
