@@ -4,3 +4,4 @@ plugins {
 rootProject.name = 'ProgLab6'
 include 'server'
 include 'general'
+include 'client'

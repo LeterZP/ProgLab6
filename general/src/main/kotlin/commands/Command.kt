@@ -1,6 +1,8 @@
 package commands
 
+import core.CommandInvokerInterface
 import exceptions.InvalidAmountOfArgumentsException
+import kotlinx.serialization.Serializable
 
 /**
  * Абстрактный класс для всех команд.
@@ -9,8 +11,9 @@ import exceptions.InvalidAmountOfArgumentsException
  *
  * @since 1.0
  */
-abstract class Command() {
+abstract class Command(protected open val ci: CommandInvokerInterface) {
     open val argumentsAmount: Int = 0
+    open var result: String = ""
 
     override fun toString(): String {
         if (getSyntax() == "") return getName() + getSyntax()
@@ -28,6 +31,7 @@ abstract class Command() {
      * @since 1.0
      */
     open fun execute(arguments: List<String>) {
+        result = ""
         var arguments = arguments
         while (arguments.contains("")) arguments = arguments.minus("")
         if (arguments.size != argumentsAmount) throw InvalidAmountOfArgumentsException(this, arguments.size)
@@ -64,5 +68,9 @@ abstract class Command() {
      */
     open fun getName(): String {
         return "command"
+    }
+
+    open fun validate(arguments: List<String>, count: Int = 0): Boolean {
+        return true
     }
 }

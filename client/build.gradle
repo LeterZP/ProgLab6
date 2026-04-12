@@ -1,0 +1,13 @@
+group = 'com.leterzp.prog.client'
+version = '2.0'
+
+dependencies {
+    implementation project(":general")
+}
+//shadowJar {
+//    archiveBaseName.set('ProgLab6')
+//    archiveVersion.set('2.0')
+//    manifest {
+//        attributes 'Main-Class': 'ClientKt'
+//    }
+//}

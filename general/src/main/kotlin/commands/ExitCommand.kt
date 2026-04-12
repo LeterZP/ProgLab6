@@ -1,5 +1,6 @@
 package commands
 
+import core.CommandInvokerInterface
 import exceptions.ProgramExitException
 
 /**
@@ -11,7 +12,7 @@ import exceptions.ProgramExitException
  *
  * @since 1.0
  */
-class ExitCommand(): Command() {
+class ExitCommand(ci: CommandInvokerInterface): Command(ci) {
     override fun execute(arguments: List<String>) {
         super.execute(arguments)
         throw ProgramExitException()

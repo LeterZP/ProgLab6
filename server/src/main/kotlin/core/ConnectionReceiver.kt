@@ -1,8 +1,11 @@
 package core
 
 class ConnectionReceiver {
+    fun receiveAndSend() {
 
-    fun read() {
+    }
+
+    fun checkConnection() {
 
     }
 }
