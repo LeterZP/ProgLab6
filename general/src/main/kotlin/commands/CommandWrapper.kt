@@ -1,6 +1,5 @@
 package commands
 
-import exceptions.InvalidElementValueException
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,18 +20,6 @@ class CommandWrapper() {
         describe = c.describe()
         syntax = c.getSyntax()
         name = c.getName()
-    }
-
-    fun wrapArguments(args: List<String>) {
-        if (validate(args)) {
-            arguments = args
-        } else {
-            throw InvalidElementValueException(args)
-        }
-    }
-
-    fun wrapResult(result: String) {
-        this.result = result
     }
 
     fun validate(args: List<String>): Boolean {

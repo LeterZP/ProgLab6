@@ -48,9 +48,20 @@ class CommandInvoker(val cm: CollectionManager): CommandInvokerInterface {
         }
     }
 
-    override fun executeCommand(cw: CommandWrapper): String {
+    override fun executeCommand(cw: CommandWrapper): CommandWrapper {
         val command = commands[cw.command] ?: throw CommandNotFoundException(cw.command)
         command.execute(cw.arguments)
-        return command.result
+        cw.result = command.result
+        return cw
+    }
+
+    fun getAllCommandsWrapped(): List<CommandWrapper> {
+        val list = mutableListOf<CommandWrapper>()
+        for (command in commands.values) {
+            val wrapper = CommandWrapper()
+            wrapper.wrapCommand(command)
+            list.add(wrapper)
+        }
+        return list.toList()
     }
 }

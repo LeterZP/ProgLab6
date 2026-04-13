@@ -15,6 +15,8 @@ import exceptions.InvalidElementValueException
  * @since 1.0
  */
 class AddCommand(override val ci: CommandInvoker): Command(ci) {
+    override val argumentsAmount = CityBuilder().size
+
     override fun execute(arguments: List<String>) {
         val creator = CityBuilder()
         if (arguments.size != creator.size) throw InvalidAmountOfArgumentsException(this, arguments.size)

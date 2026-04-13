@@ -3,5 +3,5 @@ package core
 import commands.CommandWrapper
 
 interface CommandInvokerInterface {
-    fun executeCommand(cw: CommandWrapper): String
+    fun executeCommand(cw: CommandWrapper): CommandWrapper
 }

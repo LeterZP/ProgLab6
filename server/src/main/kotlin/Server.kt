@@ -1,20 +1,36 @@
-import core.CollectionManager
-import core.CommandInvoker
-import core.IOManager
+import core.*
 import exceptions.ProgramExitException
 
 fun main() {
+    val port = 1488
     val io = IOManager()
     val cm = CollectionManager(io)
     val ci = CommandInvoker(cm)
-    var isWorking = true
-    io.print("Сервер запущен.")
-    while (isWorking) {
-        try {
-            ci.runOnServer(io.checkForLocalCommands())
-        } catch (e: ProgramExitException) {
-            isWorking = false
-            io.print(e.message)
+    val cr = ConnectionReceiver(ci, port)
+    val server = Thread {
+        var isWorking = true
+        while (isWorking) {
+            try {
+                ci.runOnServer(io.readLocalCommands())
+            } catch (e: ProgramExitException) {
+                isWorking = false
+                io.print(e.message)
+            }
         }
     }
+    val client = Thread {
+        var isWorking = true
+        while (isWorking) {
+            try {
+                cr.checkConnection()
+            } catch (e: ProgramExitException) {
+                isWorking = false
+            }
+        }
+    }
+    io.print("Сервер запущен.")
+    server.start()
+    client.start()
+    server.join()
+    cr.saveInterrupt()
 }

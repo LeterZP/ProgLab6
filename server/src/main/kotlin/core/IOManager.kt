@@ -7,11 +7,9 @@ import java.io.BufferedInputStream
 import java.io.BufferedWriter
 import java.io.FileInputStream
 import java.io.FileWriter
-import java.io.InputStreamReader
 import java.util.Stack
 
 class IOManager {
-    val reader: InputStreamReader = InputStreamReader(System.`in`)
 
     fun readJsonFile(file: String): Stack<City> {
         val reader = BufferedInputStream(FileInputStream(file))
@@ -39,9 +37,7 @@ class IOManager {
         writer.close()
     }
 
-    fun checkForLocalCommands(): String {
-        return if (reader.ready()) {
-            readln()
-        } else ""
+    fun readLocalCommands(): String {
+        return readln()
     }
 }

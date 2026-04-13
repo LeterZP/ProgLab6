@@ -33,6 +33,8 @@ class InteractiveMode(private val io: IOManager, private val cm: ConnectionManag
             } catch (e: IOException) {
                 io.source = null
                 io.write("Ошибка чтения файла или записи в него.\n")
+            } catch (e: ConnectionException) {
+                io.write(e.message + "\n")
             } catch (e: Exception) {
                 io.write("Возникла непредвиденная ошибка: " + e.message + "\n")
                 io.write("Экстренное завершение работы.\n")

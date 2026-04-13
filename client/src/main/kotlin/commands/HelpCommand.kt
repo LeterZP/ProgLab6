@@ -14,8 +14,6 @@ import exceptions.InvalidAmountOfArgumentsException
  * @since 1.0
  */
 class HelpCommand(override val ci: CommandInvoker): Command(ci) {
-    override val argumentsAmount: Int = 1
-
     /**
      * Выдаёт полную информацию о команде.
      *
@@ -26,7 +24,7 @@ class HelpCommand(override val ci: CommandInvoker): Command(ci) {
      * @since 1.0
      */
     private fun getFullInfo(command: CommandWrapper): String {
-        return "  --" + command.toString() + " : " + command.describe
+        return "  --" + command.string + " : " + command.describe
     }
 
     /**
@@ -44,6 +42,7 @@ class HelpCommand(override val ci: CommandInvoker): Command(ci) {
 
     override fun execute(arguments: List<String>) {
         try {
+            ci.getCommands()
             if (arguments.isEmpty()) {
                 result = "Список доступных команд:" + "\n"
                 for (command in ci.commands.values) {
