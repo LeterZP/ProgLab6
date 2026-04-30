@@ -24,6 +24,7 @@ class UpdateCommand(override val ci: CommandInvoker): Command(ci) {
             id = arguments[0].toLong()
         } catch (_: NumberFormatException) {
             result = "${arguments[0]} не является id элемента.\n"
+            ci.io.logger.warning("Элемент ${arguments[0]} не найден.")
             return
         }
         arguments = arguments.minus(arguments[0])
@@ -38,8 +39,10 @@ class UpdateCommand(override val ci: CommandInvoker): Command(ci) {
             }
             creator.update(ci.cm.getElement(id))
             result = "Элемент успешно обновлён.\n"
+            ci.io.logger.info("Элемент обновлён.")
         } catch (e: InvalidElementValueException) {
             result = e.message + "\n"
+            ci.io.logger.warning(e.message)
         }
     }
 

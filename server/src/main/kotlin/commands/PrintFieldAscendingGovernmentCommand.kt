@@ -20,6 +20,7 @@ class PrintFieldAscendingGovernmentCommand(override val ci: CommandInvoker): Com
         for (element in governments) {
             result += element.toString()+ "\n"
         }
+        ci.io.logger.info("Найдены все правительства.")
     }
 
     override fun describe(): String {

@@ -24,6 +24,7 @@ class InfoCommand(override val ci: CommandInvoker): Command(ci) {
         result += "  --Тип коллекции: java.util.Stack\n"
         result += "  --Дата инициализации коллекции: $time\n"
         result += "  --Количество элементов в коллекции: $size\n"
+        ci.io.logger.info("Найдена информация о коллекции.")
     }
 
     override fun getName(): String {

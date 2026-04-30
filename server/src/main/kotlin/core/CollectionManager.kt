@@ -3,6 +3,7 @@ package core
 import elements.City
 import elements.Government
 import exceptions.CollectionHasNoElementException
+import io.IOManager
 import java.io.IOException
 import java.util.Stack
 import java.time.LocalDate
@@ -19,7 +20,7 @@ import java.time.LocalDate
  *
  * @since 1.0
  */
-class CollectionManager(private val io: IOManager) {
+class CollectionManager(val io: IOManager) {
     private val save: String = System.getenv("SAVE_FILE") ?: "save.json"
     private var collection: Stack<City> = Stack<City>()
     val initializationTime: LocalDate = LocalDate.now()
@@ -27,9 +28,9 @@ class CollectionManager(private val io: IOManager) {
     init {
         try {
             collection = io.readJsonFile(save)
-            io.print("Коллекция успешно загружена.")
+            io.logger.info("Коллекция успешно загружена.")
         } catch (e: IOException) {
-            io.print("Файл сохранения не найден.")
+            io.logger.warning("Файл сохранения не найден.")
         }
     }
 
@@ -41,6 +42,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun size(): Int {
+        io.logger.info("Поиск длины коллекции...")
         return collection.size
     }
 
@@ -52,6 +54,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun saveToFile() {
+        io.logger.info("Сохранение коллекции...")
         io.writeJsonFile(save, collection)
     }
 
@@ -61,6 +64,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun sortElements() {
+        io.logger.info("Сортировка коллекции...")
         collection.sort()
     }
 
@@ -72,6 +76,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun addElement(city: City) {
+        io.logger.info("Добавление элемента...")
         collection.push(city)
     }
 
@@ -81,6 +86,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun reorderElements() {
+        io.logger.info("Переворачивание коллекции...")
         val newCollection: Stack<City> = Stack<City>()
         while (!collection.isEmpty()) {
             newCollection.push(collection.pop())
@@ -98,6 +104,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun countHigherThen(metersAboveSeaLevel: Long): Int {
+        io.logger.info("Поиск элементов выше заданного значения...")
         var count: Int = 0
         for (element in collection) {
             if (element.metersAboveSeaLevel > metersAboveSeaLevel) {
@@ -119,6 +126,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun getElement(id: Long): City {
+        io.logger.info("Поиск элемента...")
         if (collection.empty()) throw CollectionHasNoElementException(id)
         var element: City? = null
         for (e in collection) {
@@ -135,6 +143,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun getAllElementsToString(): String {
+        io.logger.info("Поиск всех элементов...")
         var result: String = ""
         for (element in collection) {
             if (result != "") result += "\n"
@@ -151,6 +160,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun getSortedGovernments(): MutableList<Government?> {
+        io.logger.info("Поиск всех правительств...")
         val governments: MutableList<Government?> = ArrayList()
         collection.sortWith(Comparator { city1, city2 -> compareValues(city1.government, city2.government) })
         for (element in collection) {
@@ -168,6 +178,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun groupElements(): HashMap<String, Int> {
+        io.logger.info("Группировка элементов по именам...")
         val names: HashMap<String, Int> = HashMap()
         for (element in collection) {
             names[element.name] = names[element.name] ?: 0
@@ -186,6 +197,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun removeElement(id: Long) {
+        io.logger.info("Удаление элемента...")
         if (!collection.remove(this.getElement(id))) throw CollectionHasNoElementException(id)
     }
 
@@ -197,6 +209,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun removeLast() {
+        io.logger.info("Удаление последнего элемента...")
         if (collection.empty()) throw CollectionHasNoElementException(-1)
         collection.remove(collection.last())
     }
@@ -211,6 +224,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun removeGreater(id: Long): Int {
+        io.logger.info("Удаление всех элементов больше заданного...")
         var count: Int = 0
         sortElements()
         while (!collection.isEmpty()) {
@@ -228,6 +242,7 @@ class CollectionManager(private val io: IOManager) {
      * @since 1.0
      */
     fun clearCollection() {
+        io.logger.info("Отчистка коллекции...")
         collection.clear()
     }
 }

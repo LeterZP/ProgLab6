@@ -28,9 +28,11 @@ class AddCommand(override val ci: CommandInvoker): Command(ci) {
                 count++
             }
             ci.cm.addElement(creator.create())
+            ci.io.logger.info("Элемент успешно добавлен.")
             result = "Элемент успешно добавлен.\n"
         } catch (e: InvalidElementValueException) {
             result = e.message + "\n"
+            ci.io.logger.warning(e.message)
         }
     }
 

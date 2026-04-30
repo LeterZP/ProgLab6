@@ -19,6 +19,7 @@ class GroupCountingByNameCommand(override val ci: CommandInvoker): Command(ci) {
         for (name in names) {
             result += "  --${name.key}: ${name.value}\n"
         }
+        ci.io.logger.info("Найден список всех элементов.")
     }
 
     override fun describe(): String {

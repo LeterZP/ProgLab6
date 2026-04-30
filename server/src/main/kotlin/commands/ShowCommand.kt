@@ -17,6 +17,7 @@ class ShowCommand(override val ci: CommandInvoker): Command(ci) {
         val output: String = ci.cm.getAllElementsToString()
         if (output != "") result = output + "\n"
         else result = "Коллекция пуста.\n"
+        ci.io.logger.info("Список элементов найден.")
     }
 
     override fun describe(): String {

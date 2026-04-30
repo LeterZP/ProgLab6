@@ -5,6 +5,7 @@ import exceptions.CommandNotFoundException
 
 class CommandInvoker(val cm: CollectionManager): CommandInvokerInterface {
     val commands: HashMap<String, Command> = HashMap()
+    val io = cm.io
 
     init {
         initializeCommand(InfoCommand(this))
@@ -31,16 +32,19 @@ class CommandInvoker(val cm: CollectionManager): CommandInvokerInterface {
     fun initializeCommand(command: Command) {
         val name: String = command.getName()
         commands[name] = command
+        io.logger.info("Команда $name инициализирована.")
     }
 
     fun runOnServer(command: String) {
         when (command.trim()) {
             "exit" -> {
                 val exit = ExitCommand(this)
+                io.logger.info("Выполняется выход.")
                 exit.execute(listOf(""))
             }
             "save" -> {
                 val save = SaveCommand(this)
+                io.logger.info("Выполняется сохранение.")
                 save.execute(listOf(""))
                 print(save.result)
             }
@@ -50,6 +54,7 @@ class CommandInvoker(val cm: CollectionManager): CommandInvokerInterface {
 
     override fun executeCommand(cw: CommandWrapper): CommandWrapper {
         val command = commands[cw.command] ?: throw CommandNotFoundException(cw.command)
+        io.logger.info("Выполняется команда ${cw.name}.")
         command.execute(cw.arguments)
         cw.result = command.result
         return cw
@@ -62,6 +67,7 @@ class CommandInvoker(val cm: CollectionManager): CommandInvokerInterface {
             wrapper.wrapCommand(command)
             list.add(wrapper)
         }
+        io.logger.info("Подготовлен список команд.")
         return list.toList()
     }
 }

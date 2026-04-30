@@ -19,8 +19,10 @@ class RemoveGreaterCommand(override val ci: CommandInvoker): Command(ci) {
         try {
             val count: Int = ci.cm.removeGreater(arguments[0].toLong())
             result = "Удалено $count элементов.\n"
+            ci.io.logger.info("Удалено $count элементов.")
         } catch (e: NumberFormatException) {
             result = "${arguments[0]} не является id элемента.\n"
+            ci.io.logger.warning("Неверный id элемента.")
         }
     }
 

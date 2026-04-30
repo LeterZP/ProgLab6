@@ -21,8 +21,12 @@ class RemoveByIdCommand(override val ci: CommandInvoker): Command(ci) {
             value = arguments[0].toLong()
             ci.cm.removeElement(value)
             result = "Элемент $value успешно удалён.\n"
+            ci.io.logger.info("Элемент $value удалён.")
         }
-        catch (e: NumberFormatException) { result = "${arguments[0]} не является id элемента.\n" }
+        catch (e: NumberFormatException) {
+            result = "${arguments[0]} не является id элемента.\n"
+            ci.io.logger.warning("Неверный id элемента.")
+        }
     }
 
     override fun describe(): String {

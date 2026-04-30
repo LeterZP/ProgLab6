@@ -13,6 +13,7 @@ class ConnectionReceiver(private val ci: CommandInvoker, private val port: Int) 
     private var waitingForCommand = false
     private val socket = DatagramSocket(port, InetAddress.getLocalHost())
     private var bytes = ByteArray(32768)
+    private val io = ci.io
 
     fun checkConnection() {
         if (!isWorking) throw ProgramExitException()
@@ -25,6 +26,7 @@ class ConnectionReceiver(private val ci: CommandInvoker, private val port: Int) 
     }
 
     private fun receive(host: InetAddress, port: Int) {
+        io.logger.info("Запрос получен.")
         var cw: CommandWrapper = decodeFromString(bytes.decodeToString().replace("\u0000", ""))
         val result: String
         if (cw.name == "help") {
@@ -34,6 +36,7 @@ class ConnectionReceiver(private val ci: CommandInvoker, private val port: Int) 
             cw = ci.executeCommand(cw)
         }
         result = encodeToString(cw)
+        io.logger.info("Результат загружен.")
         send(host, port, result)
     }
 
@@ -41,6 +44,7 @@ class ConnectionReceiver(private val ci: CommandInvoker, private val port: Int) 
         bytes = response.toByteArray()
         val packet = DatagramPacket(bytes, bytes.size, host, port)
         socket.send(packet)
+        io.logger.info("Результат отправлен.")
     }
 
     fun saveInterrupt() {

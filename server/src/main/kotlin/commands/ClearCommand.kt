@@ -16,6 +16,7 @@ class ClearCommand(override val ci: CommandInvoker): Command(ci) {
         super.execute(arguments)
         ci.cm.clearCollection()
         result = "Коллекция отчищена.\n"
+        ci.io.logger.info("Коллекция отчищена.")
     }
 
     override fun describe(): String {

@@ -18,8 +18,10 @@ class RemoveLastCommand(override val ci: CommandInvoker): Command(ci) {
         try {
             ci.cm.removeLast()
             result = "Элемент успешно удалён.\n"
+            ci.io.logger.info("Последний элемент удалён.")
         } catch (e: CollectionHasNoElementException) {
             result = "Последний элемент не найден: коллекция пуста.\n"
+            ci.io.logger.warning("Коллекция пуста.")
         }
     }
 

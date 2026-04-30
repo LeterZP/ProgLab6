@@ -6,7 +6,7 @@ import java.net.InetAddress
 
 fun main() {
     val host = InetAddress.getLocalHost()
-    val port = 1488
+    val port = 8841
     val io = IOManager()
     val cm = ConnectionManager(io, host, port)
     try {

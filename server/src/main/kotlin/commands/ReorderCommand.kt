@@ -16,6 +16,7 @@ class ReorderCommand(override val ci: CommandInvoker): Command(ci) {
         super.execute(arguments)
         ci.cm.reorderElements()
         result = "Коллекция успешно перевёрнута.\n"
+        ci.io.logger.info("Коллекция перевернута.")
     }
 
     override fun describe(): String {
