@@ -53,6 +53,7 @@ class ConnectionManager(private val io: IOManager, private val host: InetAddress
                 result = sendAndReceive(cw)
             }
         }
+        attempt = 0
         return result
     }
 }
