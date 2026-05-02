@@ -8,13 +8,12 @@ import java.net.InetAddress
 import java.net.SocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.DatagramChannel
-import java.nio.channels.ClosedByInterruptException
+import java.nio.channels.SelectionKey
+import java.nio.channels.Selector
 import kotlinx.serialization.json.Json.Default.encodeToString
 import kotlinx.serialization.json.Json.Default.decodeFromString
 
 class ConnectionManager(private val io: IOManager, private val host: InetAddress, private val port: Int) {
-    var attempt = 1
-
     fun askCommandList(): List<CommandWrapper> {
         val cw = CommandWrapper()
         cw.name = "help"
@@ -24,36 +23,34 @@ class ConnectionManager(private val io: IOManager, private val host: InetAddress
 
     fun sendAndReceive(cw: CommandWrapper): CommandWrapper {
         val address: SocketAddress = InetSocketAddress(host, port)
+        val selector = Selector.open()
         val channel = DatagramChannel.open()
-        var buffer = ByteBuffer.wrap(encodeToString(cw).toByteArray())
-        channel.send(buffer, address)
+        val sendBuffer = ByteBuffer.wrap(encodeToString(cw).toByteArray())
         val bytes = ByteArray(32768)
-        buffer = ByteBuffer.wrap(bytes)
+        val receiveBuffer = ByteBuffer.wrap(bytes)
         var result = CommandWrapper()
-        val receive = Thread {
+        channel.configureBlocking(false)
+        val key = channel.register(selector, SelectionKey.OP_READ)
+        for (i in 1..3) {
+            sendBuffer.position(0)
+            channel.send(sendBuffer, address)
             try {
-                channel.receive(buffer)
-                if (!Thread.currentThread().isInterrupted)
+                selector.select(10000)
+                if (key.isReadable) {
+                    channel.receive(receiveBuffer)
                     result = decodeFromString<CommandWrapper>(bytes.decodeToString().replace("\u0000", ""))
-            } catch (e: ClosedByInterruptException) {
-                return@Thread
+                    break
+                } else {
+                    throw ConnectionException()
+                }
+            } catch (_: ConnectionException) {
+                if (i == 3) {
+                    throw ConnectionException()
+                }
+                io.write("Не удалось установить соединение с сервером. Попытка ${i+1} из 3.\n")
+                continue
             }
         }
-        val wait = Thread {
-            Thread.sleep(10000)
-        }
-        receive.start()
-        wait.start()
-        while (receive.isAlive) {
-            if (!wait.isAlive) {
-                receive.interrupt()
-                if (attempt == 3) throw ConnectionException()
-                io.write("Не удалось установить соединение с сервером. Попытка $attempt из 3.\n")
-                attempt++
-                result = sendAndReceive(cw)
-            }
-        }
-        attempt = 0
         return result
     }
 }
