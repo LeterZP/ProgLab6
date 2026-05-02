@@ -18,7 +18,6 @@ class ServerInitializer(val port: Int, val io: IOManager) {
                     ci.runOnServer(io.readLocalCommands())
                 } catch (e: ProgramExitException) {
                     isWorking = false
-                    io.print(e.message)
                 }
             }
         }
@@ -27,7 +26,7 @@ class ServerInitializer(val port: Int, val io: IOManager) {
             while (isWorking) {
                 try {
                     cr.checkConnection()
-                } catch (e: ProgramExitException) {
+                } catch (_: ProgramExitException) {
                     isWorking = false
                 }
             }

@@ -34,10 +34,6 @@ class IOManager {
         return decodedStack
     }
 
-    fun print(s: String) {
-        println(s)
-    }
-
     fun writeJsonFile(file: String, stack: Stack<City>) {
         val listToEncode: List<City> = stack.toList()
         val text: String = encodeToString(listToEncode)
