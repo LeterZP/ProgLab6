@@ -15,7 +15,7 @@ import elements.Government
 class PrintFieldAscendingGovernmentCommand(override val ci: CommandInvoker): Command(ci) {
     override fun execute(arguments: List<String>) {
         super.execute(arguments)
-        val governments: MutableList<Government?> = ci.cm.getSortedGovernments()
+        val governments: List<Government?> = ci.cm.getSortedGovernments()
         result = ""
         for (element in governments) {
             result += element.toString()+ "\n"

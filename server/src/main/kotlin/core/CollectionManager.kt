@@ -5,8 +5,9 @@ import elements.Government
 import exceptions.CollectionHasNoElementException
 import io.IOManager
 import java.io.IOException
-import java.util.Stack
 import java.time.LocalDate
+import java.util.Stack
+import java.util.stream.Collectors
 
 /**
  * Класс для управления коллекцией, содержащей элементы типа [City].
@@ -43,7 +44,7 @@ class CollectionManager(val io: IOManager) {
      */
     fun size(): Int {
         io.logger.info("Поиск длины коллекции...")
-        return collection.size
+        return collection.stream().count().toInt()
     }
 
     /**
@@ -88,8 +89,8 @@ class CollectionManager(val io: IOManager) {
     fun reorderElements() {
         io.logger.info("Переворачивание коллекции...")
         val newCollection: Stack<City> = Stack<City>()
-        while (!collection.isEmpty()) {
-            newCollection.push(collection.pop())
+        for (element in collection.asReversed()) {
+            newCollection.push(element)
         }
         collection = newCollection
     }
@@ -105,13 +106,10 @@ class CollectionManager(val io: IOManager) {
      */
     fun countHigherThen(metersAboveSeaLevel: Long): Int {
         io.logger.info("Поиск элементов выше заданного значения...")
-        var count: Int = 0
-        for (element in collection) {
-            if (element.metersAboveSeaLevel > metersAboveSeaLevel) {
-                count++
-            }
-        }
-        return count
+        return collection.stream()
+            .filter { x -> x.metersAboveSeaLevel > metersAboveSeaLevel }
+            .count()
+            .toInt()
     }
 
     /**
@@ -127,12 +125,13 @@ class CollectionManager(val io: IOManager) {
      */
     fun getElement(id: Long): City {
         io.logger.info("Поиск элемента...")
-        if (collection.empty()) throw CollectionHasNoElementException(id)
-        var element: City? = null
-        for (e in collection) {
-            if (e.id == id) element = e
+        try {
+            return collection.stream()
+                .filter { x -> x.id == id }
+                .collect(Collectors.toList())[0]
+        } catch (e: IndexOutOfBoundsException) {
+            throw CollectionHasNoElementException(id)
         }
-        return element?: throw CollectionHasNoElementException(id)
     }
 
     /**
@@ -144,12 +143,10 @@ class CollectionManager(val io: IOManager) {
      */
     fun getAllElementsToString(): String {
         io.logger.info("Поиск всех элементов...")
-        var result: String = ""
-        for (element in collection) {
-            if (result != "") result += "\n"
-            result += element.toString()
-        }
-        return result
+        return collection.stream()
+            .map { city -> city.toString() }
+            .collect(Collectors.toList())
+            .joinToString("\n")
     }
 
     /**
@@ -159,15 +156,12 @@ class CollectionManager(val io: IOManager) {
      *
      * @since 1.0
      */
-    fun getSortedGovernments(): MutableList<Government?> {
+    fun getSortedGovernments(): List<Government?> {
         io.logger.info("Поиск всех правительств...")
-        val governments: MutableList<Government?> = ArrayList()
-        collection.sortWith(Comparator { city1, city2 -> compareValues(city1.government, city2.government) })
-        for (element in collection) {
-            governments.add(element.government)
-        }
-        sortElements()
-        return governments
+        return collection.stream()
+            .sorted { city1, city2 -> compareValues(city1.government, city2.government) }
+            .map { city ->  city.government }
+            .collect(Collectors.toList())
     }
 
     /**
@@ -180,9 +174,12 @@ class CollectionManager(val io: IOManager) {
     fun groupElements(): HashMap<String, Int> {
         io.logger.info("Группировка элементов по именам...")
         val names: HashMap<String, Int> = HashMap()
-        for (element in collection) {
-            names[element.name] = names[element.name] ?: 0
-            names[element.name] = names[element.name]!! + 1
+        val list = collection.stream()
+            .map { city -> city.name }
+            .collect(Collectors.toList())
+        for (name in list) {
+            names[name] = names[name] ?: 0
+            names[name] = names[name]!! + 1
         }
         return names
     }
@@ -225,15 +222,13 @@ class CollectionManager(val io: IOManager) {
      */
     fun removeGreater(id: Long): Int {
         io.logger.info("Удаление всех элементов больше заданного...")
-        var count: Int = 0
-        sortElements()
-        while (!collection.isEmpty()) {
-            val element: City = collection.peek()
-            if (element.id <= id) break
-            collection.pop()
-            count++
+        val list = collection.stream()
+            .filter {city -> city.id > id}
+            .collect(Collectors.toList())
+        for (element in list) {
+            collection.remove(element)
         }
-        return count
+        return list.size
     }
 
     /**
