@@ -42,7 +42,6 @@ class HelpCommand(override val ci: CommandInvoker): Command(ci) {
 
     override fun execute(arguments: List<String>) {
         try {
-            ci.getCommands()
             if (arguments.isEmpty()) {
                 result = "Список доступных команд:" + "\n"
                 for (command in ci.commands.values) {

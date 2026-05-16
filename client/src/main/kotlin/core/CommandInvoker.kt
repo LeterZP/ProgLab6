@@ -75,6 +75,7 @@ class CommandInvoker(val io: IOManager, private val cm: ConnectionManager): Comm
                 return cw
             }
             else -> {
+                getCommands()
                 val result = cm.sendAndReceive(cw)
                 return result
             }
@@ -96,7 +97,7 @@ class CommandInvoker(val io: IOManager, private val cm: ConnectionManager): Comm
                     }
                     list1
                 }) {
-                getCommands()
+                // getCommands()
                 if (instruction[0] !in commands.keys) throw CommandNotFoundException(instruction[0])
             }
             val command = commands[instruction[0]]!!

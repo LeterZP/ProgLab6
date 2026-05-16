@@ -23,6 +23,7 @@ class InteractiveMode(private val io: IOManager, private val cm: ConnectionManag
      */
     private fun interaction() {
         var isWorking = true
+        ci.getCommands()
         while (isWorking) {
             try {
                 io.write("=> ")
