@@ -20,6 +20,7 @@ class CommandInvoker(val cm: CollectionManager): CommandInvokerInterface {
         initializeCommand(GroupCountingByNameCommand(this))
         initializeCommand(CountGreaterThenMetersAboveSeaLevelCommand(this))
         initializeCommand(PrintFieldAscendingGovernmentCommand(this))
+        initializeCommand(PingCommand(this))
     }
 
     /**
